@@ -1,25 +1,47 @@
-import logo from './logo.svg';
-import './App.css';
+import React, {useState} from 'react'
+import useFetchJobs from './useFetchJobs'
+import {Container} from 'react-bootstrap'
+import Job from './Job'
+import PaginationComp from './PaginationComp';
+import InputForm from './InputForm'
 
-function App() {
+const App = () => {
+  const [params, setParams] = useState({})
+  const [page, setPage] = useState(1)
+  const {jobs, error, loading, hasNextPage} = useFetchJobs(params, page);
+  let footer
+
+  function handleParams(e) {
+    const param = e.target.name
+    const value = e.target.value
+    setPage(1)
+    setParams(prevParams => {
+      return { ...prevParams, [param]: value }
+    })
+  }
+
+  if(jobs.length >0) {
+     footer = <PaginationComp page={page} setPage={setPage} hasNextPage={hasNextPage} />
+    }
+    if(!loading && jobs.length <1) {
+      footer = <h3>No jobs found for the above parameters</h3>
+     }
+  
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Container className='my-4'>
+      <h1>GitHub Jobs</h1>
+      <InputForm params={params} onParamChange={handleParams} />
+      {loading && <h1>LOADING...</h1>}
+      {error && <h5>Something went wrong</h5>}
+      {jobs.map(job =>{
+        return <Job key={job.id} job ={job} />
+      })
+      }
+      {footer}
+    </Container>
   );
 }
 
+ 
 export default App;
