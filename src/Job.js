@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 import { Card, Badge, Button, Collapse } from 'react-bootstrap'
-// import ReactMarkdown from 'react-markdown'
+import ReactTextFormat from 'react-text-format'
 
 export default function Job({ job }) {
   const [open, setOpen] = useState(false)
@@ -19,9 +19,11 @@ export default function Job({ job }) {
                     </Card.Subtitle>
                     <Badge className='mr-2' variant ='secondary'>{job.type}</Badge>
                     <Badge className='mr-2' variant ='secondary'>{job.location}</Badge>
-                    <div style={{wordBreak:'break-all'}}>
-                        <ReactMarkdown source={job.how_to_apply} />
-                    </div>
+                        <div style={{wordBreak:'break-all'}}>
+                        <ReactTextFormat >
+                            <ReactMarkdown source={job.how_to_apply} />
+                            </ReactTextFormat>
+                        </div>
                 </div>
                 <img className="d-none d-md-block" src={job.company_logo} height="50px" alt={job.company}/>
             </div>
@@ -33,7 +35,9 @@ export default function Job({ job }) {
             </Card.Text>
             <Collapse in={open}>
                 <div className="mt-4">
-                    <ReactMarkdown source={job.description} />
+                    <ReactTextFormat>
+                        <ReactMarkdown source={job.description} />
+                    </ReactTextFormat>
                 </div>
                 </Collapse>
             </Card.Body>
