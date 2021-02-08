@@ -1,7 +1,7 @@
 import { useEffect, useReducer } from "react"
 import axios from 'axios'
 
-const BASE_URL = 'https://cors-anywhere.herokuapp.com/https://jobs.github.com/positions.json'
+const BASE_URL = 'https://jobs.github.com/positions.json'
 const actions = {
     MAKE_REQUEST : 'make-req',
     GET_DATA : 'get-data',
