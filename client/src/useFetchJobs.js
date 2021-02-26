@@ -1,7 +1,11 @@
 import { useEffect, useReducer } from "react"
 import axios from 'axios'
 
+<<<<<<< HEAD:client/src/useFetchJobs.js
 const BASE_URL = 'https://findingjob.herokuapp.com/api/'
+=======
+const BASE_URL = 'https://jobs.github.com/positions.json'
+>>>>>>> 5e6dc384d4d1bd026d04be003a6911691afbb884:src/useFetchJobs.js
 const actions = {
     MAKE_REQUEST : 'make-req',
     GET_DATA : 'get-data',
