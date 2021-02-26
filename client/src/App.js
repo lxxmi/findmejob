@@ -4,6 +4,7 @@ import {Container} from 'react-bootstrap'
 import Job from './Job'
 import PaginationComp from './PaginationComp';
 import InputForm from './InputForm'
+import Loader from './Loader'
 
 const App = () => {
   const [params, setParams] = useState({})
@@ -31,8 +32,9 @@ const App = () => {
   return (
     <Container className='my-4'>
       <h1>GitHub Jobs</h1>
+      <Loader/>
       <InputForm params={params} onParamChange={handleParams} />
-      {loading && <h1>LOADING...</h1>}
+      {loading && <Loader/>}
       {error && <h5>Something went wrong</h5>}
       {jobs.map(job =>{
         return <Job key={job.id} job ={job} />

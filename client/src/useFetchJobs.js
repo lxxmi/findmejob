@@ -1,7 +1,7 @@
 import { useEffect, useReducer } from "react"
 import axios from 'axios'
 
-const BASE_URL = 'https://cors-anywhere.herokuapp.com/https://jobs.github.com/positions.json'
+const BASE_URL = 'https://findingjob.herokuapp.com/api/'
 const actions = {
     MAKE_REQUEST : 'make-req',
     GET_DATA : 'get-data',
@@ -35,7 +35,8 @@ export default function useFetchJobs(params, page){
             params:{
                 markdown:true, page:page, ...params
             }
-        }).then(res => {
+        }
+        ).then(res => {
             dispatch({type:actions.GET_DATA, payload:{jobs:res.data}})
         }).catch(err=>{
             if(axios.isCancel(err)) return
@@ -43,12 +44,13 @@ export default function useFetchJobs(params, page){
         })
 
         const cancelToken2 = axios.CancelToken.source()
-        axios.get(BASE_URL, {
+        axios.get(BASE_URL
+            , {
             cancelToken :cancelToken2.token,
             params:{
                 markdown:true, page:page+1, ...params
-            }
-        }).then(res => {
+            }}
+        ).then(res => {
             dispatch({type:actions.HASNEXTPAGE, payload:{hasNextPage:res.data.length!==0}})
         }).catch(err=>{
             if(axios.isCancel(err)) return
