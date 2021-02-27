@@ -1,70 +1,65 @@
-import { useEffect, useReducer } from "react"
+import { useReducer, useEffect } from 'react'
 import axios from 'axios'
 
-<<<<<<< HEAD:client/src/useFetchJobs.js
-const BASE_URL = 'https://findingjob.herokuapp.com/api/'
-=======
-const BASE_URL = 'https://jobs.github.com/positions.json'
->>>>>>> 5e6dc384d4d1bd026d04be003a6911691afbb884:src/useFetchJobs.js
-const actions = {
-    MAKE_REQUEST : 'make-req',
-    GET_DATA : 'get-data',
-    ERROR : 'error',
-    HASNEXTPAGE : 'hasNextPage'
+const ACTIONS = {
+  MAKE_REQUEST: 'make-request',
+  GET_DATA: 'get-data',
+  ERROR: 'error',
+  UPDATE_HAS_NEXT_PAGE: 'update-has-next-page'
 }
 
-function reducer(state, action){
-    switch(action.type){
-        case actions.MAKE_REQUEST:
-            return{jobs:[], loading:true}
-        case actions.GET_DATA:
-            return{...state, jobs:action.payload.jobs, loading:false}
-        case actions.ERROR:
-            return{...state, jobs:[], loading:false, error:action.payload.error}
-            case actions.HASNEXTPAGE:
-                return{...state, hasNextPage:action.payload.hasNextPage}
-            default:
-            return state
-    }
+const BASE_URL = 'https://findingjob.herokuapp.com/api'
+
+function reducer(state, action) {
+  switch (action.type) {
+    case ACTIONS.MAKE_REQUEST:
+      return { loading: true, jobs: false }
+    case ACTIONS.GET_DATA:
+      return { ...state, loading: false, jobs: action.payload.jobs }
+    case ACTIONS.ERROR:
+      return { ...state, loading: false, error: action.payload.error, jobs: false }
+    case ACTIONS.UPDATE_HAS_NEXT_PAGE:
+      return { ...state, hasNextPage: action.payload.hasNextPage }
+    default:
+      return state
+  }
 }
 
-export default function useFetchJobs(params, page){
-    const [state, dispatch] = useReducer(reducer, {jobs:[], loading:true})
+const handleSubmit =(params, page, dispatch)=>{
+  const cancelToken1 = axios.CancelToken.source()
+  dispatch({ type: ACTIONS.MAKE_REQUEST })
+  axios.get(BASE_URL, {
+    cancelToken: cancelToken1.token,
+    params: { markdown: true, page: page, ...params }
+  }).then(res => {
+    dispatch({ type: ACTIONS.GET_DATA, payload: { jobs: res.data } }) 
+  }).catch(e => {
+    if (axios.isCancel(e)) return
+    dispatch({ type: ACTIONS.ERROR, payload: { error: e } }) 
+  })
 
-    useEffect(()=>{
-        const cancelToken1 = axios.CancelToken.source()
-        dispatch({type:actions.MAKE_REQUEST})
-        axios.get(BASE_URL, {
-            cancelToken :cancelToken1.token,
-            params:{
-                markdown:true, page:page, ...params
-            }
-        }
-        ).then(res => {
-            dispatch({type:actions.GET_DATA, payload:{jobs:res.data}})
-        }).catch(err=>{
-            if(axios.isCancel(err)) return
-            dispatch({type:actions.ERROR, payload:{error:err}})
-        })
+  const cancelToken2 = axios.CancelToken.source()
+  axios.get(BASE_URL, {
+    cancelToken: cancelToken2.token,
+    params: { markdown: true, page: page + 1, ...params }
+  }).then(res => {
+    dispatch({ type: ACTIONS.UPDATE_HAS_NEXT_PAGE, payload: { hasNextPage: res.data.length !== 0 } }) 
+  }).catch(e => {
+    if (axios.isCancel(e)) return
+    dispatch({ type: ACTIONS.ERROR, payload: { error: e } }) 
+  })
 
-        const cancelToken2 = axios.CancelToken.source()
-        axios.get(BASE_URL
-            , {
-            cancelToken :cancelToken2.token,
-            params:{
-                markdown:true, page:page+1, ...params
-            }}
-        ).then(res => {
-            dispatch({type:actions.HASNEXTPAGE, payload:{hasNextPage:res.data.length!==0}})
-        }).catch(err=>{
-            if(axios.isCancel(err)) return
-            dispatch({type:actions.ERROR, payload:{error:err}})
-        })
+  return () => {
+    cancelToken1.cancel()
+    cancelToken2.cancel()
+  }
+}
+export default function useFetchJobs(params, page, find) {
+  const [state, dispatch] = useReducer(reducer, { jobs: [], loading: true })
 
-        return ()=>{
-            cancelToken1.cancel()
-            cancelToken2.cancel()
-        }
-    },[params, page])
-    return state
+  useEffect(() => {
+    handleSubmit( params, page, dispatch)
+  }, [find])
+  
+  return state
 }

@@ -1,19 +1,19 @@
 import React from 'react'
-import { Form, Col } from 'react-bootstrap'
+import { Form, Col, Button } from 'react-bootstrap'
 
-export default function InputForm({ params, onParamChange }) {
+export default function SearchForm({ params, onParamChange, find, setFind }) {
+
+  const handleClick = ()=>{
+    setFind(!find)
+  }
   return (
     <Form className="mb-4">
       <Form.Row className="align-items-end">
-        <Form.Group as={Col}>
+        <Form.Group as={Col} lg="4">
           <Form.Label>Description</Form.Label>
-          <Form.Control 
-           onChange={onParamChange} 
-           value={params.description} 
-           name="description" 
-           type="text" />
+          <Form.Control onChange={onParamChange} value={params.description} name="description" type="text" />
         </Form.Group>
-        <Form.Group as={Col}>
+        <Form.Group as={Col} lg="4">
           <Form.Label>Location</Form.Label>
           <Form.Control onChange={onParamChange} value={params.location} name="location" type="text" />
         </Form.Group>
@@ -21,6 +21,10 @@ export default function InputForm({ params, onParamChange }) {
           <Form.Check onChange={onParamChange} value={params.full_time} name="full_time" id="full-time" label="Only Full Time" type="checkbox" className="mb-2" />
         </Form.Group>
       </Form.Row>
+      <Button onClick={handleClick}
+            variant="primary"
+        >Find
+        </Button>
     </Form>
   )
 }
