@@ -4,7 +4,9 @@ import { Form, Col, Button } from 'react-bootstrap'
 export default function SearchForm({ params, onParamChange, find, setFind }) {
 
   const handleClick = ()=>{
-    setFind(!find)
+    if(params.description || params.location){
+      setFind(!find)
+    }
   }
   return (
     <Form className="mb-4">
