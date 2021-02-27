@@ -37,7 +37,7 @@ function App() {
       jobs.map((job) =>  <Job key={job.id} job={job} />)
       }
       {jobs.length>0 && <JobsPagination page={page} setPage={setPage} hasNextPage={hasNextPage} />}
-      {jobs && jobs.length==0 && <h2>No jobs found</h2>}
+      {jobs && jobs.length===0 && <h2>No jobs found</h2>}
     </Container>
   )
 }
