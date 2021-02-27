@@ -59,7 +59,7 @@ export default function useFetchJobs(params, page, find) {
 
   useEffect(() => {
     handleSubmit( params, page, dispatch)
-  }, [find])
+  }, [find, page])
   
   return state
 }
