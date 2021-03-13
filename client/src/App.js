@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import useFetchJobs from './useFetchJobs'
-import { Container } from 'react-bootstrap'
+import { Container, Spinner } from 'react-bootstrap'
 import Job from './Job'
 import JobsPagination from './JobsPagination';
 import SearchForm from './SearchForm';
@@ -11,7 +11,6 @@ function App() {
   const [page, setPage] = useState(1)
   const [find, setFind] = useState(true)
   const { jobs, loading, error, hasNextPage } = useFetchJobs(params, page, find)
-  console.log(jobs)
   
   function handleParamChange(e) {
     const param = e.target.name
@@ -30,7 +29,9 @@ function App() {
        find={find}
        setFind={setFind}
        onParamChange={handleParamChange} />
-      {loading && <h1>Loading...</h1>}
+      {loading && 
+        <Spinner className="spinner" animation="border" variant="primary" />
+      }
       {error && <h1>Error. Try Refreshing.</h1>}
       {jobs.length>0 && <JobsPagination page={page} setPage={setPage} hasNextPage={hasNextPage} />}
       {jobs &&
