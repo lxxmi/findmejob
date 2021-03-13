@@ -23,7 +23,7 @@ function App() {
 
   return (
     <Container className="my-4">
-      <h1 className="mb-4">GitHub Jobs</h1>
+      <h1 className="mb-4">Finding Job</h1>
       <SearchForm
        params={params} 
        find={find}
